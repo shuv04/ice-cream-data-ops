@@ -1,0 +1,38 @@
+name: Deploy modules to prod
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build-modules:
+    runs-on: ubuntu-latest
+    environment: prod
+    env:
+      IDP_SCOPES: https://westeurope-1.cognitedata.com/.default
+      CDF_PROJECT: ${{ vars.CDF_PROJECT }}
+      CDF_CLUSTER: westeurope-1
+      IDP_CLIENT_ID: ${{ vars.IDP_CLIENT_ID }}
+      IDP_CLIENT_SECRET: ${{ secrets.IDP_CLIENT_SECRET }}
+      IDP_TOKEN_URL: https://login.microsoftonline.com/16e3985b-ebe8-4e24-9da4-933e21a9fc81/oauth2/v2.0/token
+      ICAPI_EXTRACTORS_CLIENT_ID: ${{ vars.ICAPI_EXTRACTORS_CLIENT_ID }}
+      ICAPI_EXTRACTORS_CLIENT_SECRET: ${{ secrets.ICAPI_EXTRACTORS_CLIENT_SECRET }}
+      DATA_PIPELINE_OEE_CLIENT_ID: ${{ vars.DATA_PIPELINE_OEE_CLIENT_ID }}
+      DATA_PIPELINE_OEE_CLIENT_SECRET: ${{ secrets.DATA_PIPELINE_OEE_CLIENT_SECRET }}
+    name: Loadmaster
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - uses: snok/install-poetry@v1
+        with:
+          version: 1.6.1
+          virtualenvs-create: false
+      - name: Install dependencies
+        run: poetry install
+      - name: "Build the package"
+        run: |
+          poetry run cdf-tk build --env=prod
+      - name: "Deploy the package"
+        run: |
+          poetry run cdf-tk deploy --env=prod
