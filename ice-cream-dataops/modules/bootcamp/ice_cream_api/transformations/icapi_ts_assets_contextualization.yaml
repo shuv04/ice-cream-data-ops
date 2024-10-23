@@ -14,6 +14,6 @@ authentication:
   tokenUri: {{ IDP_TOKEN_URL }}
   # Optional: If idP requires providing the cicd_scopes
   cdfProjectName: {{ CDF_PROJECT }}
-  scopes: {{ CDF_PROJECT }}
+  scopes: {{ IDP_SCOPES }}
   # Optional: If idP requires providing the cicd_audience
   audience: {{ CDF_PROJECT }}
