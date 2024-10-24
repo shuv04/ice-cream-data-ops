@@ -44,9 +44,9 @@ workflowDefinition:
       - externalId: icapi_timeseries_extractor 
 
   - externalId: icapi_ts_assets_contextualization
-    type: function
+    type: transformation
     parameters:
-      function:
+      transformation:
         externalId: icapi_ts_assets_contextualization
         concurrencyPolicy: waitForCurrent
     retries: 3
